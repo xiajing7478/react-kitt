@@ -1,0 +1,12 @@
+.loginContainer {
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  .code {
+    margin-left: 10px;
+    width: calc(45% - 10px);
+  }
+}
