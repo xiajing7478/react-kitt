@@ -1,20 +1,11 @@
-import { Action } from 'redux';
-// import handleNumStaus from './NumStatus';
-const initialState = {
-  // ...handleNumStaus.state,
-  num: 20,
-};
-const reducer = (state = initialState, action: Action) => {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { ...state, num: state.num + 1 };
-    // return handleNumStaus.actions.increment(state);
-    case 'DECREMENT':
-      return { ...state, num: state.num - 1 };
-    // return handleNumStaus.actions.incrementByStep(state, action as any);
-    default:
-      return state;
-  }
-};
+import { combineReducers } from 'redux';
+import NumStatus from './NumStatus/reducer';
+import ArrStatus from './ArrStatus/reducer';
+import User from './User/index';
+const reducers = combineReducers({
+  NumStatus,
+  ArrStatus,
+  User,
+});
 
-export default reducer;
+export default reducers;

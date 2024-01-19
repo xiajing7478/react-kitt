@@ -1,21 +1,41 @@
 import React from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
+import { login } from '@/request/api';
+import { useNavigate } from 'react-router-dom';
 import styles from './index.module.scss';
-const onFinish = (values: FieldType) => {
-  console.log('Success:', values);
-};
-
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo);
-};
-
+import { useDispatch } from 'react-redux';
 type FieldType = {
-  username?: string;
+  account?: string;
   password?: string;
-  code?: string;
 };
 
 const Login: React.FC = () => {
+  const navigator = useNavigate();
+  const dispatch = useDispatch();
+  const onFinish = async (values: FieldType) => {
+    const res: UserObject = await login({
+      account: values.account,
+      password: values.password,
+    }).finally(() => {
+      console.log('finally');
+    });
+    if (res?.code === '1') {
+      dispatch({
+        type: 'SET_USER',
+        payload: {
+          token: res?.result.token,
+          nickName: res?.result.nickname,
+        },
+      });
+      navigator('/');
+    } else {
+      message.error(res?.message);
+    }
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
   return (
     <div className={styles.loginContainer}>
       <Form
@@ -23,14 +43,14 @@ const Login: React.FC = () => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ minWidth: 600 }}
-        initialValues={{ remember: true }}
+        initialValues={{ account: '12056258282', password: 'hm#qd@23!' }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item<FieldType>
           label="用户名"
-          name="username"
+          name="account"
           rules={[{ required: true, message: '请输入用户名' }]}
         >
           <Input />
@@ -44,7 +64,7 @@ const Login: React.FC = () => {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item label="验证码">
+        {/* <Form.Item label="验证码">
           <Form.Item
             name="code"
             rules={[{ required: true, message: '请输入验证码' }]}
@@ -52,8 +72,10 @@ const Login: React.FC = () => {
           >
             <Input style={{ width: '55%' }} />
           </Form.Item>
-          <Button className={styles.code}>获取验证码</Button>
-        </Form.Item>
+          <Button onClick={getVerifyCode} className={styles.code}>
+            获取验证码
+          </Button>
+        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button style={{ width: '100%' }} type="primary" htmlType="submit">
